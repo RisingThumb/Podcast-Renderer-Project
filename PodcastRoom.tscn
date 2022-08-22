@@ -1,0 +1,65 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://entity_0_mesh_instance.tscn" type="PackedScene" id=1]
+[ext_resource path="res://top_half.png" type="Texture" id=2]
+[ext_resource path="res://bottom_half.png" type="Texture" id=3]
+[ext_resource path="res://ac-2021-04-01.ogg" type="AudioStream" id=4]
+[ext_resource path="res://Character.gd" type="Script" id=5]
+[ext_resource path="res://PodcastRoom.gd" type="Script" id=6]
+
+[sub_resource type="Animation" id=1]
+resource_name = "Lol"
+length = 500.0
+tracks/0/type = "value"
+tracks/0/path = NodePath("Character:rotation_degrees")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 30.1, 31.1, 93.7, 94.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector3( 0, -66.563, 0 ), Vector3( 0, -66.563, 0 ), Vector3( 0, -102.921, 0 ), Vector3( 0, -102.921, 0 ), Vector3( 0, -80.457, 0 ) ]
+}
+
+[node name="PodcastRoom" type="Spatial"]
+script = ExtResource( 6 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -1.86479, 1.66663, -1.41041 )
+
+[node name="entity_0_mesh_instance" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.997692, 0.381391, 4.87095 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( -0.00682902, 0.63031, -0.776314, 0.00554445, 0.776344, 0.630286, 0.999961, 0, -0.00879638, -5.89923, 4.77824, 0 )
+light_color = Color( 0.905882, 0.905882, 0.905882, 1 )
+shadow_enabled = true
+
+[node name="Character" type="Spatial" parent="."]
+transform = Transform( 0.39774, 0, -0.917498, 0, 1, 0, 0.917498, 0, 0.39774, -0.209467, 1.09087, -1.92487 )
+script = ExtResource( 5 )
+
+[node name="SpriteTopHalf" type="Sprite3D" parent="Character"]
+texture = ExtResource( 2 )
+
+[node name="SpriteBottomHalf" type="Sprite3D" parent="Character"]
+texture = ExtResource( 3 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Character"]
+stream = ExtResource( 4 )
+autoplay = true
+bus = "New Bus"
+
+[node name="Tween" type="Tween" parent="Character"]
+
+[node name="Timer" type="Timer" parent="Character"]
+wait_time = 0.05
+autostart = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Lol = SubResource( 1 )
+
+[connection signal="finished" from="Character/AudioStreamPlayer" to="Camera" method="_on_AudioStreamPlayer_finished"]
+[connection signal="timeout" from="Character/Timer" to="Character" method="_on_Timer_timeout"]
